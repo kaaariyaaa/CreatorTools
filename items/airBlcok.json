@@ -1,0 +1,24 @@
+{
+    "format_version": "1.20.30",
+    "minecraft:item": {
+      "description": {
+        "identifier": "ct:air_block",
+        "category": "Items"
+      },
+      "components": {
+        "minecraft:max_stack_size": 1,
+        "minecraft:icon": {
+          "texture": "feather"
+        },
+        "minecraft:display_name": {
+          "value": "§f空中ブロック設置"
+        },
+        "minecraft:glint": {
+          "value": true
+        },
+        "minecraft:allow_off_hand": {
+          "value": true
+        }
+      }
+    }
+  }

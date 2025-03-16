@@ -1,9 +1,9 @@
 {
     "format_version": 2,
     "header": {
-      "name": "template",
+      "name": "Creator Tools",
       "description": "",
-      "uuid": "f3efdbfe-9cae-4b6f-a898-6eca32b71cd3",
+      "uuid": "b169fdfe-d0fb-4c79-a5a8-e219b9f96c28",
       "version": [0, 1, 0],
       "min_engine_version": [1, 20, 0]
     },
@@ -11,8 +11,13 @@
       {
         "type": "script",
         "language": "javascript",
-        "uuid": "63e61db8-f0c1-4602-9313-832465022a71",
+        "uuid": "4c98e82b-353b-472b-a94d-3fd29a669ff2",
         "entry": "scripts/main.js",
+        "version": [0, 1, 0]
+      },
+      {
+        "type": "data",
+        "uuid": "5eb88d98-16a9-4a10-b9d2-8a8f25668e3a",
         "version": [0, 1, 0]
       }
     ],

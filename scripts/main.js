@@ -1,6 +1,10 @@
+import { setupPlayerEvents } from './events/playerEvents';
 
-import { world } from '@minecraft/server';
+// ゲームの初期化処理
+function initializeGame() {
+    // プレイヤーイベントの設定
+    setupPlayerEvents();
+}
 
-world.beforeEvents.playerInteractWithBlock.subscribe((ev) => {
-    
-})
+// ゲームの初期化を実行
+initializeGame(); 
