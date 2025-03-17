@@ -2,7 +2,7 @@ import { world, system, EquipmentSlot, MolangVariableMap } from '@minecraft/serv
 import { fullhealth, invincible } from '../tool/protectPlayer';
 import { addLevel, removeLevel } from '../tool/setLevel';
 import { airPlace, airBlockOverlay } from '../tool/airBlock';
-import { clickTP } from '../tool/clickTP';
+import { clickTP, clickPierce } from '../tool/clickTP';
 import { PlayerState } from '../states/PlayerState';
 import config from '../config.js';
 
@@ -23,27 +23,31 @@ export function setupPlayerEvents() {
                         pitch: 1.0
                     });
                 }
-            } else if (config.protectPlayer.itemId === itemId && player.isSneaking) {
+            } 
+            else if (config.protectPlayer.itemId === itemId && player.isSneaking) {
                 playerState.toggleInvincible();
                 player.playSound("random.click", {
                     volume: 1.0,
                     pitch: 1.0
                 });
-            } else if (config.setLevel.itemId === itemId && !player.isSneaking) {
+            } 
+            else if (config.setLevel.itemId === itemId && !player.isSneaking) {
                 if (addLevel(player)) {
                     player.playSound("random.levelup", {
                         volume: 1.0,
                         pitch: 1.0
                     });
                 }
-            } else if (config.setLevel.itemId === itemId && player.isSneaking) {
+            }
+            else if (config.setLevel.itemId === itemId && player.isSneaking) {
                 if (removeLevel(player)) {
                     player.playSound("random.fizz", {
                         volume: 1.0,
                         pitch: 1.0
                     });
                 }
-            } else if (config.airBlock.itemId === itemId) {
+            } 
+            else if (config.airBlock.itemId === itemId) {
                 if (airPlace(player, "minecraft:glass", 3)) {
                     player.playSound("random.pop", {
                         volume: 1.0,
@@ -59,8 +63,16 @@ export function setupPlayerEvents() {
                     });
                 }
             }
-            else if (config.clickTP.itemId === itemId) {
+            else if (config.clickTP.itemId === itemId && !player.isSneaking) {
                 if (clickTP(player)) {
+                    player.playSound("enderman.teleport", {
+                        volume: 1.0,
+                        pitch: 1.0
+                    });
+                }
+            }
+            else if (config.clickTP.itemId === itemId && player.isSneaking) {
+                if (clickPierce(player)) {
                     player.playSound("enderman.teleport", {
                         volume: 1.0,
                         pitch: 1.0
