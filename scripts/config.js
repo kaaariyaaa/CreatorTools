@@ -1,3 +1,5 @@
+import { clickTP } from "./tool/clickTP";
+
 export default ({
     protectPlayer : {
         itemId : "ct:protect_player",
@@ -7,5 +9,8 @@ export default ({
     },
     airBlock : {
         itemId : "ct:air_block",
+    },
+    clickTP : {
+        itemId : "ct:click_tp",
     }
 });

@@ -2,12 +2,15 @@ import { world, system, EquipmentSlot, MolangVariableMap } from '@minecraft/serv
 import { fullhealth, invincible } from '../tool/protectPlayer';
 import { addLevel, removeLevel } from '../tool/setLevel';
 import { airPlace, airBlockOverlay } from '../tool/airBlock';
+import { clickTP } from '../tool/clickTP';
 import { PlayerState } from '../states/PlayerState';
 import config from '../config.js';
 
 export function setupPlayerEvents() {
     world.beforeEvents.itemUse.subscribe((ev) => {
         const player = ev.source;
+        //const location = player.location;
+        //player.sendMessage(`x: ${location.x}, y: ${location.y}, z: ${location.z}`);
         const itemId = ev.itemStack.typeId;
         const offItemId = player.getComponent("minecraft:equippable").getEquipment(EquipmentSlot.Offhand)?.typeId;
         const playerState = PlayerState.getState(player);
@@ -51,6 +54,14 @@ export function setupPlayerEvents() {
             else if (config.airBlock.itemId === offItemId) {
                 if (airPlace(player, itemId, 5)) {
                     player.playSound("random.pop", {
+                        volume: 1.0,
+                        pitch: 1.0
+                    });
+                }
+            }
+            else if (config.clickTP.itemId === itemId) {
+                if (clickTP(player)) {
+                    player.playSound("enderman.teleport", {
                         volume: 1.0,
                         pitch: 1.0
                     });

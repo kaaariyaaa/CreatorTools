@@ -1,91 +1,78 @@
 import { LocationUtils } from './LocationUtils';
 
 export class RaycastUtils {
-    /**
-     * 視点の向きから指定距離先の座標を計算します（高精度）
-     * @param {Vector3} location - 開始位置
-     * @param {number} yaw - 水平方向の角度（度）
-     * @param {number} pitch - 垂直方向の角度（度）
-     * @param {number} maxDistance - 最大距離（マス）
-     * @param {number} stepSize - ステップサイズ（小さいほど精度が上がる）
-     * @param {Dimension} dimension - ディメンション
-     * @param {string[]} [targetBlocks] - 対象のブロックタイプID（指定がない場合は空気ブロックを探す）
-     * @returns {Vector3 | null} 見つかった座標、または null
-     */
-    static raycast(location, yaw, pitch, maxDistance, stepSize, dimension, targetBlocks = ["minecraft:air"]) {
-        const direction = LocationUtils.getDirectionVector(yaw, pitch);
-        let currentPos = { ...location };
-        let distance = 0;
 
-        while (distance <= maxDistance) {
-            const blockPos = {
-                x: Math.floor(currentPos.x),
-                y: Math.floor(currentPos.y),
-                z: Math.floor(currentPos.z)
+    /**
+     * プレイヤーの視点から指定距離先のターゲット位置とブロック位置を計算します
+     * @param {Player} player - プレイヤー
+     * @param {number} distance - 視点からの距離
+     * @returns {{ targetPos: { x: number, y: number, z: number }, blockPos: { x: number, y: number, z: number } }}
+     */
+    static calculateTargetAndBlockPos(player, distance) {
+        const { x: pitch, y: yaw } = player.getRotation();
+        const headLoc = player.getHeadLocation();
+        const direction = LocationUtils.getDirectionVector(yaw, pitch);
+        
+        // 視点から指定距離先の位置を計算
+        const targetPos = {
+            x: headLoc.x + direction.x * distance,
+            y: headLoc.y + direction.y * distance,
+            z: headLoc.z + direction.z * distance
+        };
+
+        // 整数座標に変換
+        const blockPos = {
+            x: Math.floor(targetPos.x),
+            y: Math.floor(targetPos.y),
+            z: Math.floor(targetPos.z)
+        };
+
+        return { targetPos, blockPos };
+    }
+
+    /**
+     * 視点の先のブロックの中で一番近いブロックの座標のxマス前の座標を取得します
+     * @param {Player} player - プレイヤー
+     * @param {number} maxDistance - 最大距離
+     * @param {number} offset - ブロックの手前のオフセット
+     * @returns {{ x: number, y: number, z: number }} - ブロックの座標
+     */
+    static getClosestBlockPosWithOffset(player, maxDistance, offset = 1) {
+        const { x: pitch, y: yaw } = player.getRotation();
+        const headLoc = player.getHeadLocation();
+        const direction = LocationUtils.getDirectionVector(yaw, pitch);
+
+        let previousPos = null;
+
+        for (let i = 0; i <= maxDistance; i++) {
+            const targetPos = {
+                x: headLoc.x + direction.x * i,
+                y: headLoc.y + direction.y * i,
+                z: headLoc.z + direction.z * i
             };
 
-            const block = dimension.getBlock(blockPos);
-            if (block && targetBlocks.includes(block.typeId)) {
-                return blockPos;
+            const blockPos = {
+                x: Math.floor(targetPos.x),
+                y: Math.floor(targetPos.y),
+                z: Math.floor(targetPos.z)
+            };
+
+            // ブロックが存在するかどうかをチェックする関数を呼び出す（仮の関数名）
+            if (player.dimension.getBlock(blockPos).typeId !== "minecraft:air") {
+                if (previousPos) {
+                    return {
+                        x: previousPos.x - direction.x * offset,
+                        y: previousPos.y - direction.y * offset,
+                        z: previousPos.z - direction.z * offset
+                    };
+                }
+                return null;
             }
 
-            // 次のステップに進む
-            currentPos.x += direction.x * stepSize;
-            currentPos.y += direction.y * stepSize;
-            currentPos.z += direction.z * stepSize;
-            distance += stepSize;
+            previousPos = blockPos;
         }
 
+        // 見つからなかった場合はnullを返す
         return null;
-    }
-
-    /**
-     * プレイヤーの視点から対象ブロックを探します（高精度）
-     * @param {Player} player - プレイヤー
-     * @param {number} maxDistance - 最大距離（マス）
-     * @param {number} stepSize - ステップサイズ（小さいほど精度が上がる）
-     * @param {string[]} [targetBlocks] - 対象のブロックタイプID（指定がない場合は空気ブロックを探す）
-     * @returns {Vector3 | null} 見つかった座標、または null
-     */
-    static raycastFromPlayer(player, maxDistance, stepSize = 0.1, targetBlocks = ["minecraft:air"]) {
-        const rotation = player.getRotation();
-        return this.raycast(
-            player.getHeadLocation(),
-            rotation.y,  // yaw
-            rotation.x,  // pitch
-            maxDistance,
-            stepSize,
-            player.dimension,
-            targetBlocks
-        );
-    }
-
-    /**
-     * 視点の向きから指定距離先の座標を計算します
-     * @param {Vector3} location - 開始位置
-     * @param {number} yaw - 水平方向の角度（度）
-     * @param {number} pitch - 垂直方向の角度（度）
-     * @param {number} distance - 視点からの距離（マス）
-     * @returns {Vector3} 計算された座標
-     */
-    static getTargetPosition(location, yaw, pitch, distance) {
-        const direction = LocationUtils.getDirectionVector(yaw, pitch);
-        return LocationUtils.moveInDirection(location, direction, distance);
-    }
-
-    /**
-     * プレイヤーの視点から指定距離先の座標を計算します
-     * @param {Player} player - プレイヤー
-     * @param {number} distance - 視点からの距離（マス）
-     * @returns {Vector3} 計算された座標
-     */
-    static getPlayerTargetPosition(player, distance) {
-        const rotation = player.getRotation();
-        return this.getTargetPosition(
-            player.location,
-            rotation.y,  // yaw
-            rotation.x,  // pitch
-            distance
-        );
     }
 }

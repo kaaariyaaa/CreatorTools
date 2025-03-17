@@ -1,7 +1,5 @@
-import { world } from '@minecraft/server';
 import { RaycastUtils } from '../utils/RaycastUtils';
 import { ParticleEffect } from '../effects/ParticleEffect';
-import { LocationUtils } from '../utils/LocationUtils';
 
 /**
  * 指定された位置にブロックを設置します
@@ -11,23 +9,7 @@ import { LocationUtils } from '../utils/LocationUtils';
  * @returns {boolean} ブロックの設置に成功したかどうか
  */
 export function airPlace(player, blockId = "minecraft:glass", distance) {
-    const rotation = player.getRotation();
-    const headLoc = player.getHeadLocation();
-    const direction = LocationUtils.getDirectionVector(rotation.y, rotation.x);
-    
-    // 視点から指定距離先の位置を計算
-    const targetPos = {
-        x: headLoc.x + direction.x * distance,
-        y: headLoc.y + direction.y * distance,
-        z: headLoc.z + direction.z * distance
-    };
-
-    // 整数座標に変換
-    const blockPos = {
-        x: Math.floor(targetPos.x),
-        y: Math.floor(targetPos.y),
-        z: Math.floor(targetPos.z)
-    };
+    const { targetPos, blockPos } = RaycastUtils.calculateTargetAndBlockPos(player, distance);
 
     // blockIdが未定義または無効な場合はglassを使用
     const finalBlockId = (!blockId || typeof blockId !== 'string') ? "minecraft:glass" : blockId;
@@ -35,6 +17,7 @@ export function airPlace(player, blockId = "minecraft:glass", distance) {
     if(player.dimension.getBlock(blockPos).typeId === "minecraft:air") {
         try {
             player.dimension.setBlockType(blockPos, finalBlockId);
+
             return true;
         } catch (error) {
             // ブロックの設置に失敗した場合はglassを使用
@@ -56,23 +39,7 @@ export function airPlace(player, blockId = "minecraft:glass", distance) {
  * @returns {boolean} パーティクルの表示に成功したかどうか
  */
 export function airBlockOverlay(player, distance) {
-    const rotation = player.getRotation();
-    const headLoc = player.getHeadLocation();
-    const direction = LocationUtils.getDirectionVector(rotation.y, rotation.x);
-    
-    // 視点から指定距離先の位置を計算
-    const targetPos = {
-        x: headLoc.x + direction.x * distance,
-        y: headLoc.y + direction.y * distance,
-        z: headLoc.z + direction.z * distance
-    };
-
-    // 整数座標に変換
-    const blockPos = {
-        x: Math.floor(targetPos.x),
-        y: Math.floor(targetPos.y),
-        z: Math.floor(targetPos.z)
-    };
+    const { targetPos, blockPos } = RaycastUtils.calculateTargetAndBlockPos(player, distance);
 
     try {
         // パーティクルエフェクトを初期化して使用
