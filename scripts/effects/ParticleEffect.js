@@ -23,6 +23,22 @@ export class ParticleEffect {
     }
 
     /**
+     * Molang変数マップを作成します
+     * @param {Object} color - パーティクルの色 (RGB)
+     * @param {number} speed - パーティクルの速度
+     * @param {Vector3} direction - パーティクルの方向
+     * @returns {MolangVariableMap} Molang変数マップ
+     */
+    createMolang(color, speed, direction) {
+        const molang = new MolangVariableMap();
+        molang.setColorRGB("variable.color", color);
+        if (speed !== 0) {
+            molang.setSpeedAndDirection("variable.speed", speed, direction);
+        }
+        return molang;
+    }
+
+    /**
      * 2点間にパーティクルの線を描画します
      * @param {Vector3} start - 開始座標
      * @param {Vector3} end - 終了座標
@@ -37,11 +53,7 @@ export class ParticleEffect {
             direction = { x: 0, y: 0, z: 0 }
         } = options;
 
-        const molang = new MolangVariableMap();
-        molang.setColorRGB("variable.color", color);
-        if (speed !== 0) {
-            molang.setSpeedAndDirection("variable.speed", speed, direction);
-        }
+        const molang = this.createMolang(color, speed, direction);
 
         for (let i = 0; i <= particleCount; i++) {
             const t = i / particleCount;
@@ -80,11 +92,7 @@ export class ParticleEffect {
             direction = { x: 0, y: 0, z: 0 }
         } = options;
 
-        const molang = new MolangVariableMap();
-        molang.setColorRGB("variable.color", color);
-        if (speed !== 0) {
-            molang.setSpeedAndDirection("variable.speed", speed, direction);
-        }
+        const molang = this.createMolang(color, speed, direction);
 
         for (let i = 0; i < particleCount; i++) {
             const angle = (2 * Math.PI * i) / particleCount;
@@ -118,11 +126,7 @@ export class ParticleEffect {
             direction = { x: 0, y: 0, z: 0 }
         } = options;
 
-        const molang = new MolangVariableMap();
-        molang.setColorRGB("variable.color", color);
-        if (speed !== 0) {
-            molang.setSpeedAndDirection("variable.speed", speed, direction);
-        }
+        const molang = this.createMolang(color, speed, direction);
 
         this.dimension.spawnParticle(
             particleType,
@@ -147,7 +151,7 @@ export class ParticleEffect {
     drawBlockOutline(start, end, options = {}) {
         const {
             particleType = "minecraft:dust",
-            color = { red: 1, green: 1, blue: 1 },
+            color = { red: 0, green: 0, blue: 0 },
             edgeParticleCount = 10,
             faceParticleCount = 5,
             showFaces = false,
@@ -184,11 +188,7 @@ export class ParticleEffect {
         const drawFace = (v1, v2, v3, v4) => {
             if (!showFaces) return;
 
-            const molang = new MolangVariableMap();
-            molang.setColorRGB("variable.color", color);
-            if (speed !== 0) {
-                molang.setSpeedAndDirection("variable.speed", speed, direction);
-            }
+            const molang = this.createMolang(color, speed, direction);
 
             for (let i = 0; i <= faceParticleCount; i++) {
                 for (let j = 0; j <= faceParticleCount; j++) {
@@ -243,4 +243,4 @@ export class ParticleEffect {
         drawFace(vertices[0], vertices[3], vertices[7], vertices[4]); // 左面
         drawFace(vertices[1], vertices[2], vertices[6], vertices[5]); // 右面
     }
-} 
+}

@@ -6,6 +6,8 @@ export class PlayerState {
     constructor(player) {
         this.player = player;
         this.isInvincible = false;
+        this.isNightVision = false;
+        this.gamemode = player.getGameMode();
         this.loadState();
     }
 
@@ -17,21 +19,23 @@ export class PlayerState {
     }
 
     loadState() {
-        const savedStateStr = this.player.getDynamicProperty("ct:playerState");
-        if (savedStateStr) {
-            try {
+        try {
+            const savedStateStr = this.player.getDynamicProperty("ct:playerState");
+            if (savedStateStr) {
                 const savedState = JSON.parse(savedStateStr);
-                this.isInvincible = savedState.isInvincible;
-            } catch (e) {
-                console.warn("プレイヤーの状態の読み込みに失敗しました:", e);
+                this.isInvincible = savedState.isInvincible || false;
+                this.isNightVision = savedState.isNightVision || false;
             }
+        } catch (e) {
+            console.warn("プレイヤーの状態の読み込みに失敗しました:", e);
         }
     }
 
     saveState() {
         try {
             const stateStr = JSON.stringify({
-                isInvincible: this.isInvincible
+                isInvincible: this.isInvincible,
+                isNightVision: this.isNightVision
             });
             this.player.setDynamicProperty("ct:playerState", stateStr);
         } catch (e) {
@@ -39,9 +43,17 @@ export class PlayerState {
         }
     }
 
-    toggleInvincible() {
-        this.isInvincible = !this.isInvincible;
-        this.player.sendMessage(this.isInvincible ? "無敵モードが有効になりました" : "無敵モードが無効になりました");
+    toggleState(stateKey, message) {
+        this[stateKey] = !this[stateKey];
+        this.player.sendMessage(this[stateKey] ? `${message}が有効になりました` : `${message}が無効になりました`);
         this.saveState();
     }
-} 
+
+    toggleInvincible() {
+        this.toggleState("isInvincible", "無敵モード");
+    }
+
+    toggleNightVision() {
+        this.toggleState("isNightVision", "ナイトビジョン");
+    }
+}

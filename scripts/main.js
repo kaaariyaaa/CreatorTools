@@ -7,4 +7,4 @@ function initializeGame() {
 }
 
 // ゲームの初期化を実行
-initializeGame(); 
+initializeGame();

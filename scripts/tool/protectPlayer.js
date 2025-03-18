@@ -1,3 +1,17 @@
+function applyEffects(player, effects) {
+    for (const { effect, duration, options } of effects) {
+        player.addEffect(effect, duration, options);
+    }
+}
+
+function removeEffects(player, effects) {
+    for (const effect of effects) {
+        if (player.getEffect(effect)) {
+            player.removeEffect(effect);
+        }
+    }
+}
+
 /**
  * プレイヤーの体力を回復し、負の効果を除去します
  * @param {Player} player - 対象のプレイヤー
@@ -5,16 +19,15 @@
  */
 export function fullhealth(player) {
     try {
-        // 体力を最大値まで回復
         const health = player.getComponent("minecraft:health");
         if (health) {
             health.setCurrentValue(health.effectiveMax);
         }
-        
-        // 満腹度を回復
-        player.addEffect("minecraft:saturation", 1, { amplifier: 255, showParticles: false });
-        
-        // 負の効果を除去
+
+        applyEffects(player, [
+            { effect: "minecraft:saturation", duration: 1, options: { amplifier: 255, showParticles: false } }
+        ]);
+
         removeNegativeEffects(player);
         return true;
     } catch (e) {
@@ -30,17 +43,11 @@ export function fullhealth(player) {
  */
 export function invincible(player) {
     try {
-        // 体力を最大値まで回復
-        const health = player.getComponent("minecraft:health");
-        if (health) {
-            health.setCurrentValue(health.effectiveMax);
-        }
+        applyEffects(player, [
+            { effect: "minecraft:resistance", duration: 2, options: { amplifier: 255, showParticles: false } },
+            { effect: "minecraft:fire_resistance", duration: 2, options: { amplifier: 255, showParticles: false } }
+        ]);
 
-        // 耐性効果を付与
-        player.addEffect("minecraft:resistance", 2, { amplifier: 255, showParticles: false });
-        player.addEffect("minecraft:fire_resistance", 2, { amplifier: 255, showParticles: false });
-        
-        // 負の効果を除去
         removeNegativeEffects(player);
         return true;
     } catch (e) {
@@ -64,11 +71,7 @@ function removeNegativeEffects(player) {
             "minecraft:mining_fatigue"
         ];
 
-        for (const effect of negativeEffects) {
-            if (player.getEffect(effect)) {
-                player.removeEffect(effect);
-            }
-        }
+        removeEffects(player, negativeEffects);
         return true;
     } catch (e) {
         console.warn("負の効果の除去に失敗しました:", e);

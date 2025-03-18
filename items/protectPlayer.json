@@ -11,7 +11,7 @@
           "texture": "apple_golden"
         },
         "minecraft:display_name": {
-          "value": "§6全回復/無敵"
+          "value": "§6全回復 / 無敵"
         },
         "minecraft:glint": {
           "value": true

@@ -1,6 +1,21 @@
 import { LocationUtils } from './LocationUtils';
 
 export class RaycastUtils {
+    static calculateTargetPos(headLoc, direction, distance) {
+        return {
+            x: headLoc.x + direction.x * distance,
+            y: headLoc.y + direction.y * distance,
+            z: headLoc.z + direction.z * distance
+        };
+    }
+
+    static calculateBlockPos(targetPos) {
+        return {
+            x: Math.floor(targetPos.x),
+            y: Math.floor(targetPos.y),
+            z: Math.floor(targetPos.z)
+        };
+    }
 
     /**
      * プレイヤーの視点から指定距離先のターゲット位置とブロック位置を計算します
@@ -12,20 +27,9 @@ export class RaycastUtils {
         const { x: pitch, y: yaw } = player.getRotation();
         const headLoc = player.getHeadLocation();
         const direction = LocationUtils.getDirectionVector(yaw, pitch);
-        
-        // 視点から指定距離先の位置を計算
-        const targetPos = {
-            x: headLoc.x + direction.x * distance,
-            y: headLoc.y + direction.y * distance,
-            z: headLoc.z + direction.z * distance
-        };
 
-        // 整数座標に変換
-        const blockPos = {
-            x: Math.floor(targetPos.x),
-            y: Math.floor(targetPos.y),
-            z: Math.floor(targetPos.z)
-        };
+        const targetPos = this.calculateTargetPos(headLoc, direction, distance);
+        const blockPos = this.calculateBlockPos(targetPos);
 
         return { targetPos, blockPos };
     }
@@ -45,26 +49,12 @@ export class RaycastUtils {
         let previousPos = null;
 
         for (let i = 0; i <= maxDistance; i++) {
-            const targetPos = {
-                x: headLoc.x + direction.x * i,
-                y: headLoc.y + direction.y * i,
-                z: headLoc.z + direction.z * i
-            };
+            const targetPos = this.calculateTargetPos(headLoc, direction, i);
+            const blockPos = this.calculateBlockPos(targetPos);
 
-            const blockPos = {
-                x: Math.floor(targetPos.x),
-                y: Math.floor(targetPos.y),
-                z: Math.floor(targetPos.z)
-            };
-
-            // ブロックが存在するかどうかをチェックする関数を呼び出す（仮の関数名）
             if (player.dimension.getBlock(blockPos).typeId !== "minecraft:air") {
                 if (previousPos) {
-                    return {
-                        x: previousPos.x - direction.x * offset,
-                        y: previousPos.y - direction.y * offset,
-                        z: previousPos.z - direction.z * offset
-                    };
+                    return this.calculateTargetPos(previousPos, direction, -offset);
                 }
                 return null;
             }
@@ -72,7 +62,6 @@ export class RaycastUtils {
             previousPos = blockPos;
         }
 
-        // 見つからなかった場合はnullを返す
         return null;
     }
 }
