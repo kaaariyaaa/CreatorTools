@@ -11,9 +11,10 @@ export function timeChanger(player) {
         }
 
         world.setTimeOfDay(time);
+        player.onScreenDisplay.setActionBar(`時間を変更しました`);
         return true;
     } catch (error) {
-        player.sendMessage(`error: ${error}`);
+        console.error("時間変更に失敗しました:", error);
         return false;
     }
 }
@@ -39,7 +40,7 @@ export function weatherChanger(player) {
         player.dimension.setWeather(nextWeather, 24000);
         return true;
     } catch (error) {
-        player.sendMessage(`error: ${error}`);
+        console.error("天気変更に失敗しました:", error);
         return false;
     }
 }

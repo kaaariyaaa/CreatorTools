@@ -45,7 +45,7 @@ export class PlayerState {
 
     toggleState(stateKey, message) {
         this[stateKey] = !this[stateKey];
-        this.player.sendMessage(this[stateKey] ? `${message}が有効になりました` : `${message}が無効になりました`);
+        this.player.onScreenDisplay.setActionBar(this[stateKey] ? `${message}が有効になりました` : `${message}が無効になりました`);
         this.saveState();
     }
 

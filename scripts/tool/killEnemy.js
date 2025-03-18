@@ -13,8 +13,7 @@ export function killEnemy(player) {
         }
         return true;
     } catch (error) {
-        console.warn("敵の処理に失敗しました:", error);
-        player.sendMessage(`エラーが発生しました: ${error}`);
+        console.error("敵の処理に失敗しました:", error);
         return false;
     }
 }

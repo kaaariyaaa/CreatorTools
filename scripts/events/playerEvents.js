@@ -70,14 +70,18 @@ export function setupPlayerEvents() {
 
     world.beforeEvents.playerInteractWithBlock.subscribe((ev) => {
         if (!ev.isFirstEvent) return;
-        system.runTimeout(() => {
-            const player = ev.player;
-            const block = ev.block;
-            const itemId = player.getComponent("minecraft:inventory").container.getItem(player.selectedSlotIndex).typeId;
-            if (config.tools.blockCopy.itemId === itemId) {
-                if (blockCopy(player, block)) player.playSound("random.pop", { volume: 1.0, pitch: 1.0 });
-            }
-        }, 1);
+
+        const player = ev.player;
+        const block = ev.block;
+        const itemId = player.getComponent("minecraft:inventory").container.getItem(player.selectedSlotIndex)?.typeId;
+
+        if (itemId === config.tools.blockCopy.itemId) {
+            system.runTimeout(() => {
+                if (blockCopy(player, block, player.selectedSlotIndex)) {
+                    player.playSound("random.pop", { volume: 1.0, pitch: 1.0 });
+                }
+            }, 1);
+        }
     });
 
     system.runInterval(() => {

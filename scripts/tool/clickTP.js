@@ -29,10 +29,11 @@ export function clickTP(player) {
                     break;
             }
             player.teleport(teleportPos);
+            player.onScreenDisplay.setActionBar("テレポートしました");
             return true;
         }
     } catch (error) {
-        player.sendMessage("視点の先にブロックがないのでテレポートできません");
+        console.error("テレポートに失敗しました:", error);
         return false;
     }
 }
@@ -72,12 +73,13 @@ export function clickPierce(player) {
                 } else if (player.dimension.getBlock(teleportPos).typeId === "minecraft:air") {
                     if (direction === Direction.Up) teleportPos.y -= 1;
                     player.teleport(teleportPos);
+                    player.onScreenDisplay.setActionBar("テレポートしました");
                     return true;
                 }
             }
         }
     } catch (error) {
-        player.sendMessage("視点の先にブロックがないのでテレポートできません");
+        console.error("貫通テレポートに失敗しました:", error);
         return false;
     }
 }
