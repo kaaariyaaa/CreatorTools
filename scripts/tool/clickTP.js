@@ -1,12 +1,18 @@
 import { Direction } from '@minecraft/server';
 
+// プレイヤーを視点の先にテレポートする関数
+/**
+ * @param {Player} player - テレポートを実行する対象のプレイヤー
+ */
 export function clickTP(player) {
     try {
+        // 視点の先のブロックを取得
         const blockRaycastHit = player.getBlockFromViewDirection({ includeLiquidBlocks: false, includePassableBlocks: false });
         const blockPos = blockRaycastHit.block.location;
         const direction = blockRaycastHit.face;
 
         if (blockPos) {
+            // テレポート位置を計算
             let teleportPos = { x: blockPos.x + 0.5, y: blockPos.y, z: blockPos.z + 0.5 };
             switch (direction) {
                 case Direction.Down:
@@ -28,6 +34,7 @@ export function clickTP(player) {
                     teleportPos.x -= 1;
                     break;
             }
+            // プレイヤーをテレポート
             player.teleport(teleportPos);
             player.onScreenDisplay.setActionBar("テレポートしました");
             return true;
@@ -38,6 +45,10 @@ export function clickTP(player) {
     }
 }
 
+// プレイヤーを視点の先のブロックを貫通してテレポートする関数
+/**
+ * @param {Player} player - テレポートを実行する対象のプレイヤー
+ */
 export function clickPierce(player) {
     try {
         const blockRaycastHit = player.getBlockFromViewDirection({ includeLiquidBlocks: false, includePassableBlocks: false });
@@ -68,6 +79,7 @@ export function clickPierce(player) {
                         teleportPos.x += 1;
                         break;
                 }
+                // 空気ブロックを検出してテレポート
                 if (player.dimension.getBlock(teleportPos).typeId !== "minecraft:air") {
                     max++;
                 } else if (player.dimension.getBlock(teleportPos).typeId === "minecraft:air") {

@@ -13,6 +13,7 @@ export function airPlace(player, blockId = "minecraft:glass", distance) {
     const finalBlockId = blockId && typeof blockId === 'string' ? blockId : "minecraft:glass";
 
     try {
+        // 空気ブロックの位置に指定されたブロックを設置
         if (player.dimension.getBlock(blockPos).typeId === "minecraft:air") {
             player.dimension.setBlockType(blockPos, finalBlockId);
             return true;

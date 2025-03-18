@@ -7,6 +7,7 @@ import { Player } from '@minecraft/server';
  */
 export function addLevel(player) {
     try {
+        // レベルをリセットして最大値を追加
         player.resetLevel();
         player.addLevels(99999);
         return true;
@@ -23,6 +24,7 @@ export function addLevel(player) {
  */
 export function removeLevel(player) {
     try {
+        // レベルをリセット
         player.resetLevel();
         return true;
     } catch (e) {

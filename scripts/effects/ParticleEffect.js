@@ -1,6 +1,7 @@
 import { MolangVariableMap } from '@minecraft/server';
 import { LocationUtils } from '../utils/LocationUtils';
 
+// パーティクルエフェクトを管理するクラス
 export class ParticleEffect {
     /**
      * パーティクルエフェクトを初期化します
@@ -73,13 +74,6 @@ export class ParticleEffect {
      * 座標を円で囲むパーティクルを表示します
      * @param {Vector3} position - 中心座標
      * @param {Object} options - オプション
-     * @param {number} options.radius - 円の半径
-     * @param {number} options.particleCount - パーティクルの数
-     * @param {number} options.height - 地面からの高さ
-     * @param {string} options.particleType - パーティクルの種類
-     * @param {Object} options.color - パーティクルの色 (RGB)
-     * @param {number} options.speed - パーティクルの速度
-     * @param {Vector3} options.direction - パーティクルの方向
      */
     drawCircle(position, options = {}) {
         const {

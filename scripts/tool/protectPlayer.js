@@ -1,9 +1,19 @@
+// プレイヤーに効果を適用する関数
+/**
+ * @param {Player} player - 効果を適用する対象のプレイヤー
+ * @param {Array} effects - 適用する効果のリスト
+ */
 function applyEffects(player, effects) {
     for (const { effect, duration, options } of effects) {
         player.addEffect(effect, duration, options);
     }
 }
 
+// プレイヤーから効果を削除する関数
+/**
+ * @param {Player} player - 効果を削除する対象のプレイヤー
+ * @param {Array} effects - 削除する効果のリスト
+ */
 function removeEffects(player, effects) {
     for (const effect of effects) {
         if (player.getEffect(effect)) {
@@ -12,9 +22,9 @@ function removeEffects(player, effects) {
     }
 }
 
+// プレイヤーの体力を回復し、負の効果を除去します
 /**
- * プレイヤーの体力を回復し、負の効果を除去します
- * @param {Player} player - 対象のプレイヤー
+ * @param {Player} player - 体力回復を実行する対象のプレイヤー
  * @returns {boolean} 処理が成功したかどうか
  */
 export function fullhealth(player) {
@@ -36,9 +46,9 @@ export function fullhealth(player) {
     }
 }
 
+// プレイヤーを無敵状態にします
 /**
- * プレイヤーを無敵状態にします
- * @param {Player} player - 対象のプレイヤー
+ * @param {Player} player - 無敵化を実行する対象のプレイヤー
  * @returns {boolean} 処理が成功したかどうか
  */
 export function invincible(player) {
@@ -56,9 +66,9 @@ export function invincible(player) {
     }
 }
 
+// プレイヤーから負の効果を除去します
 /**
- * プレイヤーから負の効果を除去します
- * @param {Player} player - 対象のプレイヤー
+ * @param {Player} player - 負の効果を除去する対象のプレイヤー
  * @returns {boolean} 処理が成功したかどうか
  */
 function removeNegativeEffects(player) {

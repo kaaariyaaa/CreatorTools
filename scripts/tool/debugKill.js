@@ -1,11 +1,13 @@
 import { ParticleEffect } from '../effects/ParticleEffect';
 
+// 指定されたエンティティをすべて削除
 function killEntities(entities) {
     for (const entity of entities) {
         entity.kill();
     }
 }
 
+// プレイヤー周囲のエンティティを削除
 export function debugKill(player) {
     try {
         const entities = player.dimension.getEntities().filter(entity => {
@@ -25,6 +27,7 @@ export function debugKill(player) {
     }
 }
 
+// 視点の先のエンティティを削除
 export function debugKillSelect(player) {
     try {
         const entities = player.getEntitiesFromViewDirection({
@@ -41,6 +44,7 @@ export function debugKillSelect(player) {
     }
 }
 
+// プレイヤー周囲にパーティクルを表示
 export function debugKillOverlay(player) {
     const effect = new ParticleEffect(player.dimension);
     effect.drawCircle(player.location, {
@@ -51,6 +55,7 @@ export function debugKillOverlay(player) {
     });
 }
 
+// 視点の先のエンティティにパーティクルを表示
 export function debugKillSelectOverlay(player) {
     const entities = player.getEntitiesFromViewDirection({
         maxDistance: 4,
